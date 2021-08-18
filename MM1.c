@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <math.h>
-//#include "lcgrand.h"
+#include "lcgrand.h"
 
 #define BUSY 1
 #define IDLE 0
 #define Q_LIMIT 100
 
 int num_delays_required, next_event_type, num_cus_delayed, num_events, num_in_q, server_status;
-float mean_interval, mean_service, area_num_in_q, area_server_status, sim_time, time_arrival[Q_LIMIT + 1], time_last_event, time_next_event[3], total_of_delays;
+float mean_interval, mean_service, area_num_in_q, area_server_status, sim_time, time_arrival[Q_LIMIT + 1], time_last_event, next_arrival_time, next_departure_time, total_of_delays;
 FILE *infile, *outfile;
 
 void initialize(void);
@@ -59,27 +59,37 @@ void initialize(void){
     area_num_in_q = 0.0;
     area_server_status = 0.0;
     
-    time_next_event[1] = sim_time + exp(mean_interval);
-    time_next_event[2] = 1.0e+30;
+    next_arrival_time = sim_time + exp(mean_interval);
+    next_departure_time = 1.0e+30;
 }
 
 void timing(void){
-    int i;
-    float min_time_next_event = 1.0e+29;
+    float min_time_next_event;
     next_event_type = 0;
     
     //compare and choose the smallest time to occur
-    for(i=1;i<=2;i++){
-        if(time_next_event[i]<min_time_next_event){
-            min_time_next_event = time_next_event[i];
-            next_event_type = i;
-        }
+    if(next_arrival_time<=next_departure_time){
+        min_time_next_event = next_arrival_time;
+        next_event_type = 1;
     }
+    else{
+        min_time_next_event = next_departure_time;
+        next_event_type = 2;
+    }
+    
 
-    if(next_event_type = 0){
+    if(next_event_type == 0){
         fprintf(outfile,"\nEvent list is empty at time %f",sim_time);
         exit(1);
     }
     
     sim_time = min_time_next_event;
+}
+
+void exp(float mean){
+    return -mean * log(lcgrand(1));
+}
+
+void update_time_avg_interval(void){
+
 }
