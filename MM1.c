@@ -172,5 +172,5 @@ void report(void){
     fprintf(outfile, "[Theo] Server utilization%8.3Lf \n",theo_server_util);
     fprintf(outfile, "[Expe] Server utilization%8.3Lf \n",area_server_status/sim_time);
     fprintf(outfile, "-----------------------------------------\n");
-    fprintf(outfile, "Time simulation ended%12.3Lf minutes", sim_time);
+    fprintf(outfile, "Time simulation ended %12.3Lf minutes", sim_time);
 }
